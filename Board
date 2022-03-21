@@ -1,0 +1,49 @@
+public class Board {
+    public board;
+    public Board(int[][] tiles) {
+        this.board = tiles;
+    }
+    public String toString() {
+
+    }
+    public int dimension() {
+        return board.length;
+    }
+    public int hamming() {
+        int dimension = dimension();
+        int hamming = 0;
+        for (int i; i < dimension; i++) {
+            for (int j; j < dimension; j++) {
+                if (board[i][j] != j + i * dimension) {
+                    hamming ++;
+                }
+            }
+        }
+        return hamming;
+    }
+    public int manhatten() {
+        for (int i; i < dimension; i++) {
+            for (int j; j < dimension; j++) {
+                int tile = board[i][j];
+                int[][] intended = tile;
+
+            }
+        }
+
+    }
+    public boolean isGoal() {
+        return hamming == 0;
+    }
+    public boolean equals(Object y) {
+
+    }
+    public Iterable<Board> neighbors() {
+
+    }
+    public Board twin() {
+
+    }
+    public static void main(String[] args) {
+
+    }
+}
