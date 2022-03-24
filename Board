@@ -1,19 +1,27 @@
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Random;
+
 public class Board {
-    public board;
+    public int[][] board;
     public Board(int[][] tiles) {
         this.board = tiles;
     }
     public String toString() {
-
+        StringBuilder string = new StringBuilder();
+        for (int[] row: board) {
+            string.append(Arrays.toString(row)).append("\n");
+        }
+        return string.toString();
     }
     public int dimension() {
         return board.length;
     }
-    public int hamming() {
+    public int hamming() { //  Not done
         int dimension = dimension();
         int hamming = 0;
-        for (int i; i < dimension; i++) {
-            for (int j; j < dimension; j++) {
+        for (int i = 0; i < dimension; i++) {
+            for (int j = 0; j < dimension; j++) {
                 if (board[i][j] != j + i * dimension) {
                     hamming ++;
                 }
@@ -21,29 +29,83 @@ public class Board {
         }
         return hamming;
     }
-    public int manhatten() {
-        for (int i; i < dimension; i++) {
-            for (int j; j < dimension; j++) {
-                int tile = board[i][j];
-                int[][] intended = tile;
+    public int manhattan() {
+        int dimension = dimension();
+        int manhattan = 0;
 
+        int tile;
+        int[] intended = new int[2];
+
+        for (int i = 0; i < dimension; i++) {
+            for (int j = 0; j < dimension; j++) {
+                tile = board[i][j] - 1;
+
+                intended[0] = tile % dimension;
+                intended[1] = tile / dimension;
+
+                manhattan += (intended[0] - i) + (intended[1] - j);
+            }
+        }
+        return manhattan;
+    }
+    public boolean isGoal() {
+        return hamming() == 0;
+    }
+    public boolean equals(Board y) {
+        return Arrays.deepEquals(board, y.board);
+    }
+    public Iterable<Board> neighbors() { // Does not work yet
+        int dimension = dimension();
+        int x = 0;
+        int y = 0;
+
+        for (int i = 0; i < dimension; i++) {
+            for (int j = 0; j < dimension; j++) {
+                if (board[i][j] == 0) {
+                    x = i;
+                    y = j;
+                    break;
+                }
             }
         }
 
-    }
-    public boolean isGoal() {
-        return hamming == 0;
-    }
-    public boolean equals(Object y) {
+        ArrayList<Board> neighbors = new ArrayList<>();
 
-    }
-    public Iterable<Board> neighbors() {
+        int[][] adjacents = new int[][] {{x + 1, y}, {x - 1, y}, {x, y + 1}, {x, y - 1}};
 
+        int[][] neighbor = board;
+
+        for (int[] adjacent: adjacents) {
+            try {
+                neighbor = board;
+                neighbor[x][y] = board[adjacent[0]][adjacent[1]];
+                neighbor[adjacent[0]][adjacent[1]] = 0;
+                neighbors.add(new Board(neighbor));
+            } catch (Exception ArrayIndexOutOfBounds) {
+                System.out.println("ArrayIndexOutOfBounds");
+            }
+        }
+
+        return neighbors;
     }
     public Board twin() {
+        int dimension = dimension();
+        int[][] newBoard = board;
 
+        Random randomizer = new Random();
+
+        int[] tileOneCoords = new int[] {randomizer.nextInt(dimension), randomizer.nextInt(dimension)};
+        int[] tileTwoCoords = new int[] {randomizer.nextInt(dimension), randomizer.nextInt(dimension)};
+
+        int tileOneVal = newBoard[tileOneCoords[0]][tileOneCoords[1]];
+        newBoard[tileOneCoords[0]][tileOneCoords[1]] = newBoard[tileTwoCoords[0]][tileTwoCoords[1]];
+        newBoard[tileTwoCoords[0]][tileTwoCoords[1]] = tileOneVal;
+
+        return new Board(newBoard);
     }
     public static void main(String[] args) {
-
+        int[][] array = new int[][] {{1, 3, 2}, {4, 0, 6}, {7, 8, 9}};
+        Board board = new Board(array);
+        board.neighbors();
     }
 }
